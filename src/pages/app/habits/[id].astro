@@ -1,0 +1,120 @@
+---
+import AppShell from "../../../layouts/AppShell.astro";
+import AvMiniAppBar from "../../../components/AvMiniAppBar.astro";
+import { getHabitDetailForUser, listHabitsForUser } from "../../../actions";
+
+const user = Astro.locals.user;
+if (!user?.id) {
+  return Astro.redirect("/");
+}
+
+const habitId = Astro.params.id;
+if (!habitId) {
+  return Astro.redirect("/app");
+}
+
+const detail = await getHabitDetailForUser(user.id, habitId);
+if (!detail) {
+  return Astro.redirect("/app");
+}
+
+const listData = await listHabitsForUser(user.id, true);
+const bootstrapPayload = JSON.stringify({ habits: listData.items, summary: listData.summary, activeHabitDetail: detail.habit });
+---
+
+<AppShell title={`${detail.habit.title} · Habit Tracker`} description="Habit detail and progress history.">
+  <AvMiniAppBar title="Habit Tracker" subtitle="Habit detail" />
+  <main class="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6" x-data x-init={`$store.habitTracker.bootstrap(${bootstrapPayload})`}>
+    <a href="/app" class="text-sm text-slate-400 hover:text-slate-200">← Back to habits</a>
+
+    <section class="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-semibold text-slate-100">{detail.habit.title}</h1>
+          <p class="mt-1 text-sm text-slate-400">{detail.habit.frequencyType} target: {detail.habit.targetPerPeriod} · Status: {detail.habit.status}</p>
+        </div>
+        <div class="flex gap-2">
+          {detail.habit.status === "active" ? (
+            <button class="rounded border border-slate-700 px-3 py-1 text-sm text-slate-200" @click={`await $store.habitTracker.archiveHabit('${detail.habit.id}')`}>Archive</button>
+          ) : (
+            <button class="rounded border border-slate-700 px-3 py-1 text-sm text-slate-200" @click={`await $store.habitTracker.restoreHabit('${detail.habit.id}')`}>Restore</button>
+          )}
+          <button class="rounded border border-slate-700 px-3 py-1 text-sm text-slate-200" @click="$store.habitTracker.modal.edit = true">Edit</button>
+          <button class="rounded bg-emerald-500 px-3 py-1 text-sm font-semibold text-slate-950" @click="$store.habitTracker.modal.log = true">Quick log</button>
+        </div>
+      </div>
+
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <article class="rounded-lg border border-slate-800 bg-slate-950/60 p-3"><p class="text-xs text-slate-400">Total logs</p><p class="text-xl font-semibold text-slate-100">{detail.metrics.totalLogs}</p></article>
+        <article class="rounded-lg border border-slate-800 bg-slate-950/60 p-3"><p class="text-xs text-slate-400">Last completed</p><p class="text-xl font-semibold text-slate-100">{detail.metrics.lastCompletedDate ? new Date(detail.metrics.lastCompletedDate).toISOString().slice(0,10) : "—"}</p></article>
+        <article class="rounded-lg border border-slate-800 bg-slate-950/60 p-3"><p class="text-xs text-slate-400">Current streak</p><p class="text-xl font-semibold text-slate-100">{detail.metrics.recentStreak}</p></article>
+      </div>
+
+      {detail.habit.notes && <p class="mt-4 rounded-md border border-slate-800 bg-slate-950/50 p-3 text-sm text-slate-300">{detail.habit.notes}</p>}
+    </section>
+
+    <section class="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+      <h2 class="text-lg font-semibold text-slate-100">Recent history</h2>
+      <div class="mt-4 space-y-3">
+        {detail.logs.map((log) => (
+          <article class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+            <div>
+              <p class="text-sm text-slate-100">{new Date(log.loggedDate).toISOString().slice(0, 10)} · value {log.value}</p>
+              {log.notes && <p class="text-xs text-slate-400">{log.notes}</p>}
+            </div>
+            <button class="rounded border border-slate-700 px-3 py-1 text-xs text-slate-300" @click={`await $store.habitTracker.removeHabitLog('${detail.habit.id}', '${log.id}')`}>Remove</button>
+          </article>
+        ))}
+        {detail.logs.length === 0 && <p class="rounded-md border border-dashed border-slate-700 p-6 text-center text-sm text-slate-400">No logs yet for this habit.</p>}
+      </div>
+    </section>
+
+
+    <div x-show="$store.habitTracker.modal.edit" class="fixed inset-0 z-50 bg-slate-950/70 p-4">
+      <div class="mx-auto mt-16 w-full max-w-lg rounded-xl border border-slate-800 bg-slate-900 p-5">
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-slate-100">Edit habit</h3>
+          <button class="text-slate-400" @click="$store.habitTracker.modal.edit = false">✕</button>
+        </div>
+        <form class="space-y-3" @submit.prevent={`await $store.habitTracker.updateHabit('${detail.habit.id}', new FormData($event.target)); window.location.reload();`}>
+          <input name="title" required value={detail.habit.title} class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100" />
+          <select name="category" class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100">
+            <option value="">Category (optional)</option>
+            <option value="health" selected={detail.habit.category === "health"}>Health</option>
+            <option value="learning" selected={detail.habit.category === "learning"}>Learning</option>
+            <option value="focus" selected={detail.habit.category === "focus"}>Focus</option>
+            <option value="fitness" selected={detail.habit.category === "fitness"}>Fitness</option>
+            <option value="finance" selected={detail.habit.category === "finance"}>Finance</option>
+            <option value="personal" selected={detail.habit.category === "personal"}>Personal</option>
+            <option value="custom" selected={detail.habit.category === "custom"}>Custom</option>
+          </select>
+          <div class="grid grid-cols-2 gap-2">
+            <select name="frequencyType" class="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100">
+              <option value="daily" selected={detail.habit.frequencyType === "daily"}>Daily</option>
+              <option value="weekly" selected={detail.habit.frequencyType === "weekly"}>Weekly</option>
+            </select>
+            <input type="number" min="1" name="targetPerPeriod" value={detail.habit.targetPerPeriod} class="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100" />
+          </div>
+          <textarea name="notes" rows="3" class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100">{detail.habit.notes ?? ""}</textarea>
+          <button class="w-full rounded-md bg-emerald-500 px-4 py-2 font-semibold text-slate-950" :disabled="$store.habitTracker.submitting">Save changes</button>
+        </form>
+      </div>
+    </div>
+
+    <div x-show="$store.habitTracker.modal.log" class="fixed inset-0 z-50 bg-slate-950/70 p-4">
+      <div class="mx-auto mt-16 w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-5">
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-slate-100">Log progress</h3>
+          <button class="text-slate-400" @click="$store.habitTracker.modal.log = false">✕</button>
+        </div>
+        <form class="space-y-3" @submit.prevent="await $store.habitTracker.logHabitProgress(new FormData($event.target))">
+          <input type="hidden" name="habitId" value={detail.habit.id} />
+          <input type="date" name="loggedDate" value={new Date().toISOString().slice(0, 10)} class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100" />
+          <input type="number" min="1" name="value" value="1" class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100" />
+          <textarea name="notes" rows="2" class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100" placeholder="Notes (optional)"></textarea>
+          <button class="w-full rounded-md bg-emerald-500 px-4 py-2 font-semibold text-slate-950" :disabled="$store.habitTracker.submitting">Save log</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</AppShell>
