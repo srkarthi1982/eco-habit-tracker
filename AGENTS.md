@@ -26,5 +26,6 @@ MANDATORY: After completing each task, update this repo’s AGENTS.md Task Log (
 
 ## Task Log (Recent)
 - Keep newest first; include date and short summary.
+- 2026-03-25 Implemented Habit Tracker V1 end-to-end (Astro DB Habits/HabitLogs schema, authenticated /app + /app/habits/[id], Astro actions with ownership enforcement + archive/restore + duplicate log guard, Alpine global store, dashboard summary webhook + high-signal notification hooks, premium landing/workspace/detail UX); validation: build passes, typecheck blocked by restricted package install for @astrojs/check.
 - 2026-02-09 Added repo-level AGENTS.md enforcement contract (workspace reference + mandatory task-log update rule).
 - 2026-02-09 Initialized repo AGENTS baseline for single-repo Codex/AI safety.
