@@ -1,93 +1,39 @@
 ---
+import { AvButton, AvContainer } from "@ansiversa/components";
 import AppShell from "../layouts/AppShell.astro";
-import { AvContainer, AvButton } from "@ansiversa/components";
-
-const title = "Eco Habit Tracker – Ansiversa";
-const description = "Track eco-friendly actions.";
 ---
 
-<AppShell title={title} description={description}>
-  <!-- Hero -->
-  <section class="av-hero">
-    <AvContainer size="narrow" className="av-hero__content--narrow">
-      <div class="av-hero__content">
-        <div class="av-kicker">
-          <span>Lifestyle & Personal · Ansiversa Mini App</span>
-        </div>
-        <h1 class="av-gradient-text">Eco Habit Tracker</h1>
-        <p>
-          Track eco-friendly actions.
-        </p>
-      </div>
-      <div class="av-cta-row">
-        <AvButton href="https://eco-habit-tracker.ansiversa.com">Launch Eco</AvButton>
+<AppShell title="Habit Tracker · Ansiversa" description="Build consistency with calm daily habit tracking.">
+  <section class="border-b border-slate-800 bg-slate-950">
+    <AvContainer size="narrow" className="py-20 text-center">
+      <p class="mb-4 text-xs uppercase tracking-[0.24em] text-emerald-400">Ansiversa Mini App · Habit Tracker</p>
+      <h1 class="mx-auto max-w-3xl text-4xl font-semibold text-slate-100 sm:text-5xl">
+        Build better routines with a clean, focused habit workspace.
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-base text-slate-300">
+        Create your personal habits, check in daily, and keep progress visible without clutter. Habit Tracker is designed
+        for consistency, not complexity.
+      </p>
+      <div class="mt-8 flex justify-center">
+        <AvButton href="/app">Open your habit workspace</AvButton>
       </div>
     </AvContainer>
   </section>
 
-  <!-- Problem -->
-  <section class="av-section">
-    <AvContainer size="narrow">
-      <div class="av-section-header">
-        <h2 class="av-section-title">The problem it solves</h2>
-        <p class="av-section-lead">
-          Personal goals, habits, and routines are easy to start and hard to maintain.
-        </p>
-      </div>
-      <div class="av-section-body space-y-3 text-slate-300">
-        <p>Eco Habit Tracker keeps this one area of your life simple, trackable, and encouraging.</p>
-      </div>
-    </AvContainer>
-  </section>
-
-  <!-- Why this mini app -->
-  <section class="av-section">
-    <AvContainer size="narrow">
-      <div class="av-section-header">
-        <h2 class="av-section-title">Why Eco Habit Tracker feels different</h2>
-        <p class="av-section-lead">
-          A focused mini app inside the larger Ansiversa ecosystem.
-        </p>
-      </div>
-      <div class="av-section-body">
-        <ul class="space-y-2 text-slate-300 list-disc list-inside">
-          <li>Designed for real daily life, not perfect theory.</li>
-          <li>Helps you see progress in small, manageable steps.</li>
-          <li>Works alongside other Ansiversa tools that support your day.</li>
-        </ul>
-      </div>
-    </AvContainer>
-  </section>
-
-  <!-- How it works -->
-  <section class="av-section">
-    <AvContainer size="narrow">
-      <div class="av-section-header">
-        <h2 class="av-section-title">How it works</h2>
-        <p class="av-section-lead">
-          Simple, clear steps so people can start in under a minute.
-        </p>
-      </div>
-      <ol class="av-section-body space-y-2 text-slate-300 list-decimal list-inside">
-        <li>Open Eco Habit Tracker at the start or end of your day.</li>
-        <li>Add or update your latest actions, plans, or reflections.</li>
-        <li>Review your progress and adjust your next small step.</li>
-      </ol>
-    </AvContainer>
-  </section>
-
-  <!-- Final CTA -->
-  <section class="av-section">
-    <AvContainer size="narrow">
-      <div class="av-section-header">
-        <h2 class="av-section-title">Ready to try Eco Habit Tracker?</h2>
-        <p class="av-section-lead">
-          Open the app, follow the simple flow, and let it handle the heavy lifting.
-        </p>
-      </div>
-      <div class="av-cta-row">
-        <AvButton href="https://eco-habit-tracker.ansiversa.com">Start with Eco</AvButton>
-      </div>
+  <section class="bg-slate-950">
+    <AvContainer size="narrow" className="grid gap-4 py-14 sm:grid-cols-3">
+      <article class="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+        <h2 class="text-sm font-semibold text-slate-100">Track meaningful habits</h2>
+        <p class="mt-2 text-sm text-slate-300">Keep health, learning, focus, and personal goals in one simple list.</p>
+      </article>
+      <article class="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+        <h2 class="text-sm font-semibold text-slate-100">Log progress quickly</h2>
+        <p class="mt-2 text-sm text-slate-300">One-click check-ins and tidy notes make daily use effortless.</p>
+      </article>
+      <article class="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+        <h2 class="text-sm font-semibold text-slate-100">See calm momentum</h2>
+        <p class="mt-2 text-sm text-slate-300">Recent history and lightweight summaries keep you oriented.</p>
+      </article>
     </AvContainer>
   </section>
 </AppShell>
