@@ -25,6 +25,8 @@ MANDATORY: After completing each task, update this repo’s AGENTS.md Task Log (
 - Review this repo's existing AGENTS.md Task Log history before making changes.
 
 ## Task Log (Recent)
+- 2026-03-29 Completed readiness repair pass after DB isolation sweep: fixed Alpine store typing in `src/alpine.ts`, preserved app-specific Turso isolation, and revalidated `npm run typecheck`, `npm run build`, and `npm run db:push`.
+- 2026-03-29 Synced local repo to `origin/main` after stale local seed commit divergence blocked pull; preserved prior local state on `backup/pre-pull-sync-2026-03-29`.
 - Keep newest first; include date and short summary.
 - 2026-03-25 Implemented Habit Tracker V1 end-to-end (Astro DB Habits/HabitLogs schema, authenticated /app + /app/habits/[id], Astro actions with ownership enforcement + archive/restore + duplicate log guard, Alpine global store, dashboard summary webhook + high-signal notification hooks, premium landing/workspace/detail UX); validation: build passes, typecheck blocked by restricted package install for @astrojs/check.
 - 2026-02-09 Added repo-level AGENTS.md enforcement contract (workspace reference + mandatory task-log update rule).
