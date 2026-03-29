@@ -112,39 +112,45 @@ export default function initAlpine(Alpine: Alpine) {
       tab?: "overview" | "habits" | "archived";
       activeHabitDetail?: HabitItem;
     }) {
-      store.habits = payload.habits;
-      store.summary = payload.summary;
-      store.activeTab = payload.tab ?? "overview";
-      store.activeHabitDetail = payload.activeHabitDetail ?? null;
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.habits = payload.habits;
+      state.summary = payload.summary;
+      state.activeTab = payload.tab ?? "overview";
+      state.activeHabitDetail = payload.activeHabitDetail ?? null;
     },
 
     setTab(tab: "overview" | "habits" | "archived") {
-      store.activeTab = tab;
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.activeTab = tab;
     },
 
     async refresh(includeArchived = true) {
-      store.loading = true;
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.loading = true;
       try {
         const response = await actions.listHabits({ includeArchived });
         if (response.error) throw new Error(response.error.message);
-        store.habits = response.data.data.items as HabitItem[];
-        store.summary = response.data.data.summary;
+        state.habits = response.data.data.items as HabitItem[];
+        state.summary = response.data.data.summary;
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to refresh habits.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to refresh habits.");
       } finally {
-        store.loading = false;
+        state.loading = false;
       }
     },
 
     setFlash(type: "success" | "error", message: string) {
-      store.flash = { type, message };
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.flash = { type, message };
       setTimeout(() => {
-        store.flash = null;
+        const currentState = Alpine.store("habitTracker") as HabitTrackerStore;
+        currentState.flash = null;
       }, 3200);
     },
 
     async createHabit(formData: FormData) {
-      store.submitting = true;
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.submitting = true;
       try {
         const payload = {
           title: String(formData.get("title") ?? ""),
@@ -155,18 +161,19 @@ export default function initAlpine(Alpine: Alpine) {
         };
         const response = await actions.createHabit(payload);
         if (response.error) throw new Error(response.error.message);
-        store.modal.create = false;
-        await store.refresh(true);
-        store.setFlash("success", "Habit created.");
+        state.modal.create = false;
+        await state.refresh(true);
+        state.setFlash("success", "Habit created.");
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to create habit.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to create habit.");
       } finally {
-        store.submitting = false;
+        state.submitting = false;
       }
     },
 
     async updateHabit(id: string, formData: FormData) {
-      store.submitting = true;
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.submitting = true;
       try {
         const response = await actions.updateHabit({
           id,
@@ -177,40 +184,43 @@ export default function initAlpine(Alpine: Alpine) {
           notes: String(formData.get("notes") || "") || undefined,
         });
         if (response.error) throw new Error(response.error.message);
-        store.modal.edit = false;
-        await store.refresh(true);
-        store.setFlash("success", "Habit updated.");
+        state.modal.edit = false;
+        await state.refresh(true);
+        state.setFlash("success", "Habit updated.");
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to update habit.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to update habit.");
       } finally {
-        store.submitting = false;
+        state.submitting = false;
       }
     },
 
     async archiveHabit(id: string) {
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
       try {
         const response = await actions.archiveHabit({ id });
         if (response.error) throw new Error(response.error.message);
-        await store.refresh(true);
-        store.setFlash("success", "Habit archived.");
+        await state.refresh(true);
+        state.setFlash("success", "Habit archived.");
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to archive habit.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to archive habit.");
       }
     },
 
     async restoreHabit(id: string) {
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
       try {
         const response = await actions.restoreHabit({ id });
         if (response.error) throw new Error(response.error.message);
-        await store.refresh(true);
-        store.setFlash("success", "Habit restored.");
+        await state.refresh(true);
+        state.setFlash("success", "Habit restored.");
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to restore habit.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to restore habit.");
       }
     },
 
     async logHabitProgress(formData: FormData) {
-      store.submitting = true;
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
+      state.submitting = true;
       try {
         const response = await actions.logHabitProgress({
           habitId: String(formData.get("habitId")),
@@ -219,24 +229,25 @@ export default function initAlpine(Alpine: Alpine) {
           notes: String(formData.get("notes") || "") || undefined,
         });
         if (response.error) throw new Error(response.error.message);
-        store.modal.log = false;
-        store.setFlash("success", "Progress logged.");
+        state.modal.log = false;
+        state.setFlash("success", "Progress logged.");
         window.location.reload();
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to log progress.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to log progress.");
       } finally {
-        store.submitting = false;
+        state.submitting = false;
       }
     },
 
     async removeHabitLog(habitId: string, logId: string) {
+      const state = Alpine.store("habitTracker") as HabitTrackerStore;
       try {
         const response = await actions.removeHabitLog({ habitId, logId });
         if (response.error) throw new Error(response.error.message);
-        store.setFlash("success", "Log removed.");
+        state.setFlash("success", "Log removed.");
         window.location.reload();
       } catch (error) {
-        store.setFlash("error", error instanceof Error ? error.message : "Unable to remove log.");
+        state.setFlash("error", error instanceof Error ? error.message : "Unable to remove log.");
       }
     },
   };
