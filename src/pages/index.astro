@@ -1,39 +1,157 @@
 ---
-import { AvButton, AvContainer } from "@ansiversa/components";
 import AppShell from "../layouts/AppShell.astro";
+import LandingPageStandard from "../components/landing/LandingPageStandard.astro";
+import type { LandingPageContent } from "../lib/landing";
+
+const title = "Eco Habit Tracker | Ansiversa";
+const description = "Track personal habits, logs, and archive-safe progress in a private workspace.";
+const rootAppUrl = Astro.locals.rootAppUrl ?? "https://ansiversa.com";
+const appUrl = new URL("/app", Astro.url).toString();
+const signInUrl = new URL("/login", rootAppUrl);
+signInUrl.searchParams.set("returnTo", appUrl);
+const startHref = Astro.locals.isAuthenticated ? "/app" : signInUrl.toString();
+
+const landingContent: LandingPageContent = {
+  categoryLabel: "Habit Workspace",
+  appLabel: "Authenticated DB-backed workspace",
+  title: "Keep your habit tracking clear instead of spreading it across reminders and notes.",
+  subtitle:
+    "Create habits, log progress, remove mistaken logs, archive older routines, and review the full habit record in a private tracking workspace.",
+  heroBullets: [
+    "Save recurring habits in one personal workspace with owner-scoped history",
+    "Log progress and remove mistaken entries without corrupting the habit record",
+    "Archive and restore habits while keeping your progress history intact",
+  ],
+  primaryCta: {
+    label: Astro.locals.isAuthenticated ? "Open Workspace" : "Sign in to Open",
+    href: startHref,
+  },
+  secondaryCta: {
+    label: "See Workflow",
+    href: "#workflow",
+    variant: "ghost",
+  },
+  heroNote:
+    "Current V1 is a personal habit tracker. It is not a social accountability app, coaching platform, or AI habit advisor.",
+  heroPanel: {
+    eyebrow: "Habit flow",
+    title: "Create → Log → Review",
+    steps: [
+      "1. Save the habit in your protected workspace",
+      "2. Log progress against the habit as you build consistency",
+      "3. Archive older routines without deleting the stored history",
+    ],
+    meta: [
+      { value: "DB", label: "Persistence" },
+      { value: "Per-user", label: "Ownership" },
+    ],
+  },
+  features: {
+    title: "What Eco Habit Tracker gives you in V1",
+    lead:
+      "The product is built for personal habit organization and logging, not for social pressure loops or automated coaching.",
+    items: [
+      {
+        title: "Structured habit records",
+        description:
+          "Keep the habit definition and its related progress history together in one owner-scoped record.",
+      },
+      {
+        title: "Progress logging with safe removal",
+        description:
+          "Add progress logs as you go and remove mistaken entries without destabilizing the overall habit state.",
+      },
+      {
+        title: "Summary-aware workspace",
+        description:
+          "Workspace totals reflect active or archived habits, recent logs, and completions from persisted records.",
+      },
+      {
+        title: "Archive-safe habit history",
+        description:
+          "Move old habits out of the active set while keeping the record available when you need context later.",
+      },
+    ],
+  },
+  pillars: {
+    title: "Why this works better than casual habit checklists",
+    lead:
+      "The product stays intentionally narrow: one protected personal workspace, one habit model, and one clear rhythm for logging and review over time.",
+    items: [
+      {
+        title: "Truthful product boundary",
+        description:
+          "This is a personal habit-tracking workspace, not a shared accountability network and not an AI coaching system.",
+      },
+      {
+        title: "Log-first tracking structure",
+        description:
+          "Habit records and progress logs stay connected, which makes consistency review easier than flat checklist tools.",
+      },
+      {
+        title: "Duplicate-log safety",
+        description:
+          "The app blocks duplicate logs for the same habit and date so the saved progress stays coherent.",
+      },
+      {
+        title: "Protected personal access",
+        description:
+          "Protected routes and safe detail fallbacks keep one user’s habit records private and dependable.",
+      },
+    ],
+  },
+  workflow: {
+    eyebrow: "How it works",
+    title: "Move from habit setup to reliable progress review",
+    lead:
+      "The workflow is designed for one user tracking recurring habits over time without rebuilding context on every return.",
+    steps: [
+      {
+        title: "Create the habit",
+        description:
+          "Start in the protected workspace and save the recurring habit you want to track.",
+      },
+      {
+        title: "Log progress cleanly",
+        description:
+          "Use the habit detail and workspace flows to record progress as the habit evolves.",
+      },
+      {
+        title: "Archive and revisit when needed",
+        description:
+          "Move older routines out of the active set without deleting the history you may still want to review.",
+      },
+    ],
+  },
+  showcase: {
+    eyebrow: "Current product shape",
+    title: "Built for personal habit tracking, not social coaching",
+    description:
+      "The landing copy stays aligned to the verified implementation: Eco Habit Tracker helps one authenticated user manage DB-backed habits and habit logs with archive, restore, and safe detail review.",
+    bullets: [
+      "Good fit for personal consistency tracking and owner-scoped routine review",
+      "Centered on manual habit setup, progress logs, archive state, and safe detail access",
+    ],
+    calloutLabel: "Freeze truth",
+    calloutValue: "Personal habit workspace only",
+  },
+  finalCta: {
+    title: "Start tracking habits with more structure and less clutter",
+    description:
+      "Open the workspace, save the habit properly, and keep progress visible as the routine becomes part of your week.",
+    primaryCta: {
+      label: Astro.locals.isAuthenticated ? "Open Workspace" : "Sign in to Open",
+      href: startHref,
+    },
+    secondaryCta: {
+      label: "Review Features",
+      href: "#features",
+      variant: "ghost",
+    },
+  },
+};
 ---
 
-<AppShell title="Habit Tracker · Ansiversa" description="Build consistency with calm daily habit tracking.">
-  <section class="border-b border-slate-800 bg-slate-950">
-    <AvContainer size="narrow" className="py-20 text-center">
-      <p class="mb-4 text-xs uppercase tracking-[0.24em] text-emerald-400">Ansiversa Mini App · Habit Tracker</p>
-      <h1 class="mx-auto max-w-3xl text-4xl font-semibold text-slate-100 sm:text-5xl">
-        Build better routines with a clean, focused habit workspace.
-      </h1>
-      <p class="mx-auto mt-6 max-w-2xl text-base text-slate-300">
-        Create your personal habits, check in daily, and keep progress visible without clutter. Habit Tracker is designed
-        for consistency, not complexity.
-      </p>
-      <div class="mt-8 flex justify-center">
-        <AvButton href="/app">Open your habit workspace</AvButton>
-      </div>
-    </AvContainer>
-  </section>
-
-  <section class="bg-slate-950">
-    <AvContainer size="narrow" className="grid gap-4 py-14 sm:grid-cols-3">
-      <article class="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-        <h2 class="text-sm font-semibold text-slate-100">Track meaningful habits</h2>
-        <p class="mt-2 text-sm text-slate-300">Keep health, learning, focus, and personal goals in one simple list.</p>
-      </article>
-      <article class="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-        <h2 class="text-sm font-semibold text-slate-100">Log progress quickly</h2>
-        <p class="mt-2 text-sm text-slate-300">One-click check-ins and tidy notes make daily use effortless.</p>
-      </article>
-      <article class="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-        <h2 class="text-sm font-semibold text-slate-100">See calm momentum</h2>
-        <p class="mt-2 text-sm text-slate-300">Recent history and lightweight summaries keep you oriented.</p>
-      </article>
-    </AvContainer>
-  </section>
+<AppShell title={title} description={description}>
+  <LandingPageStandard content={landingContent} />
 </AppShell>

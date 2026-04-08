@@ -25,6 +25,7 @@ MANDATORY: After completing each task, update this repo’s AGENTS.md Task Log (
 - Review this repo's existing AGENTS.md Task Log history before making changes.
 
 ## Task Log (Recent)
+- 2026-04-08 Rolled out Landing Page Standard V1.1: replaced the minimal landing with the approved Ansiversa product-storytelling landing, kept the protected DB-backed habit-tracking positioning aligned to app-spec reality, and revalidated `npm run typecheck`, `npm run build`, `/`, and CTA sign-in flow.
 - 2026-03-30 Populated app-spec.md with implementation-aligned V1 documentation based on freeze verification.
 - 2026-03-30 Initialized app-spec.md using standard V1 template from web repo.
 - 2026-03-29 Completed Freeze Level 1 repair + verification: fixed Alpine store reactivity so create/update/archive/restore flows reflect DB changes without manual reloads, then revalidated `npm run typecheck`, `npm run build`, `npm run db:push`, and authenticated browser flows (create, detail, edit, log/remove, archive/restore, refresh, invalid-route safety, cross-user protection).
